@@ -8,10 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\ViewModels\" />
-    <Folder Include="Controllers\" />
     <Folder Include="ViewModels\" />
-    <Folder Include="Views\" />
-    <Folder Include="wwwroot\admin\" />
   </ItemGroup>
 
   <ItemGroup>
