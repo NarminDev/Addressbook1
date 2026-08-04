@@ -1,1 +1,152 @@
-﻿<h1>Welcome to the Home Page</h1>
+﻿@{
+    ViewData["Title"] = "Ana Səhifə";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Hero / Welcome Bölməsi - 1 Ton Daha Canlı Və Şəffaf Yaşıl */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(76, 125, 50, 0.82) 0%, rgba(52, 92, 32, 0.88) 100%) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 24px;
+        padding: 60px 30px;
+        text-align: center;
+        box-shadow: 0 12px 32px rgba(26, 45, 16, 0.22);
+        margin-bottom: 40px;
+    }
+
+    .welcome-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3.5em;
+        font-weight: 700;
+        letter-spacing: 2px;
+        color: #ffffff;
+        margin-bottom: 15px;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .welcome-subtitle {
+        font-size: 1.15em;
+        color: #f2f8ee;
+        max-width: 650px;
+        margin: 0 auto;
+        line-height: 1.6;
+        font-weight: 500;
+    }
+
+    /* Kartlar Bölməsi */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    .card {
+        background: var(--card-bg);
+        border: 2px solid var(--card-border);
+        border-radius: 20px;
+        padding: 32px 26px;
+        transition: all 0.35s ease;
+        box-shadow: 0 6px 18px rgba(35, 49, 24, 0.06);
+        cursor: pointer;
+    }
+
+        .card:hover {
+            background: var(--card-hover-bg);
+            border-color: var(--card-hover-border);
+            transform: translateY(-6px);
+            box-shadow: 0 14px 28px rgba(35, 49, 24, 0.18);
+        }
+
+    /* Tünd Yaşıl İkon Çərçivəsi */
+    .card-icon {
+        width: 54px;
+        height: 54px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(35, 49, 24, 0.08);
+        border-radius: 14px;
+        border: 1px solid rgba(35, 49, 24, 0.15);
+        margin-bottom: 18px;
+        transition: all 0.35s ease;
+        color: var(--olive-dark);
+    }
+
+        .card-icon svg {
+            width: 26px;
+            height: 26px;
+            stroke: var(--olive-dark);
+            fill: none;
+        }
+
+    .card:hover .card-icon {
+        background: var(--olive-dark);
+        border-color: var(--olive-dark);
+        transform: scale(1.05);
+    }
+
+        .card:hover .card-icon svg {
+            stroke: #ffffff;
+        }
+
+    .card-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.35em;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 10px;
+    }
+
+    .card-desc {
+        color: var(--text-muted);
+        font-size: 0.95em;
+        line-height: 1.6;
+    }
+</style>
+
+<!-- Welcome Bölməsi -->
+<div class="hero-section">
+    <h1 class="welcome-title">WELCOME</h1>
+    <p class="welcome-subtitle">
+        Welcome to the Address Book system. Manage all your contacts in one place—conveniently, securely, and in an organized manner.
+    </p>
+</div>
+
+<!-- Funksional Bloku -->
+<div class="features-grid">
+    <div class="card">
+        <div class="card-icon">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                <circle cx="12" cy="8" r="2" />
+                <path d="M15 13a3 3 0 0 0-6 0" />
+            </svg>
+        </div>
+        <h3 class="card-title">Contact List</h3>
+        <p class="card-desc">Keep all your personal and business contacts organized in one place.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-icon">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+            </svg>
+        </div>
+        <h3 class="card-title">Fast Search</h3>
+        <p class="card-desc">Easily find any address or phone number with our convenient search feature.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-icon">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+        </div>
+        <h3 class="card-title">Secure Login</h3>
+        <p class="card-desc">Log in to your account and manage only the information that belongs to you.</p>
+    </div>
+</div>
