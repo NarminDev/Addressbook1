@@ -1,0 +1,245 @@
+﻿@using Addressbook1.ViewModels.Account
+@model LoginVM
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<style>
+    /* Səhifənin Əsas Konteyneri */
+    .login-wrapper {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Başlıq Və İkon Bölməsi */
+    .login-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 540px;
+        margin-bottom: 25px;
+    }
+
+    .login-header-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 4.5em;
+        font-weight: 700;
+        color: #0f9675;
+        margin: 0;
+        line-height: 1;
+    }
+
+    .login-header-icon {
+        width: 95px;
+        height: 95px;
+        border: 4px solid #0f9675;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: transparent;
+    }
+
+        .login-header-icon svg {
+            width: 50px;
+            height: 50px;
+            stroke: #0f9675;
+            stroke-width: 1.8;
+            fill: none;
+        }
+
+    /* Yaşıl Login Kartı */
+    .auth-card {
+        width: 100%;
+        max-width: 540px;
+        background-color: #0f9675;
+        border-radius: 6px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+    }
+
+    /* Tab Menyusu */
+    .auth-tabs {
+        display: flex;
+        background-color: #0a7359;
+    }
+
+    .auth-tab {
+        padding: 12px 22px;
+        color: rgba(255, 255, 255, 0.75);
+        text-decoration: none;
+        font-size: 0.92em;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+        .auth-tab.active {
+            background-color: #0f9675;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .auth-tab:hover:not(.active) {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: #ffffff;
+        }
+
+    /* Form Korpusu */
+    .auth-card-body {
+        padding: 35px 40px 40px;
+    }
+
+    .auth-card-title {
+        font-size: 2.2em;
+        font-weight: 600;
+        color: #ffffff;
+        margin-bottom: 6px;
+    }
+
+    .auth-card-subtitle {
+        font-size: 0.9em;
+        color: rgba(255, 255, 255, 0.85);
+        margin-bottom: 22px;
+        line-height: 1.4;
+    }
+
+    /* Daxil Etmə Xanaları */
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 14px 18px;
+        border: none;
+        background-color: #e8ecef;
+        color: #0a7359;
+        font-size: 1.05em;
+        font-weight: 500;
+        border-radius: 3px;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+        .form-input::placeholder {
+            color: #109675;
+            opacity: 0.85;
+        }
+
+        .form-input:focus {
+            background-color: #ffffff;
+            box-shadow: inset 0 0 0 2px #0a7359;
+        }
+
+    /* Düymə Və Keçidlər */
+    .auth-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 25px;
+    }
+
+    .btn-submit {
+        background-color: #e8ecef;
+        color: #0f9675;
+        padding: 12px 36px;
+        border: none;
+        border-radius: 3px;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .btn-submit:hover {
+            background-color: #ffffff;
+            color: #0a7359;
+        }
+
+    .forgot-link {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: 0.9em;
+        transition: color 0.2s ease;
+    }
+
+        .forgot-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+    /* Validasiya Xətaları */
+    .field-validation-error {
+        color: #ffdddd;
+        font-size: 0.8em;
+        margin-top: 4px;
+        display: block;
+        font-weight: 500;
+    }
+
+    .text-danger-custom {
+        color: #ffdddd;
+        font-size: 0.85em;
+        margin-bottom: 12px;
+    }
+</style>
+
+<div class="login-wrapper">
+    <!-- Başlıq Və Qıfıl (Login) İkonu -->
+    <div class="login-header">
+        <h1 class="login-header-title">Login</h1>
+        <div class="login-header-icon">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Əsas Kart -->
+    <div class="auth-card">
+        <!-- Tab Naviqasiyası -->
+        <div class="auth-tabs">
+            <a href="/Account/Login" class="auth-tab active">Login</a>
+            <a href="/Account/Register" class="auth-tab">Register</a>
+            <a href="/Account/ForgotPassword" class="auth-tab">Reset Password</a>
+        </div>
+
+        <!-- Form Məzmunu -->
+        <div class="auth-card-body">
+            <h2 class="auth-card-title">Login.</h2>
+            <p class="auth-card-subtitle">
+                Welcome back! Please enter your details to sign in.
+            </p>
+
+            <form asp-controller="Account" asp-action="Login" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger-custom"></div>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <input asp-for="Email" class="form-input" placeholder="Email" />
+                    <span asp-validation-for="Email" class="field-validation-error"></span>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <input asp-for="Password" type="password" class="form-input" placeholder="Password" />
+                    <span asp-validation-for="Password" class="field-validation-error"></span>
+                </div>
+
+                <!-- Əməliyyat Düyməsi Və Link -->
+                <div class="auth-actions">
+                    <button type="submit" class="btn-submit">Login</button>
+                    <a href="/Account/ForgotPassword" class="forgot-link">Forgot your password?</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
