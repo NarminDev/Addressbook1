@@ -222,8 +222,7 @@
             </p>
 
             <form asp-controller="Account" asp-action="Register" method="post">
-                <div asp-validation-summary="ModelOnly" class="text-danger-custom"></div>
-
+                <div asp-validation-summary="All" class="text-danger-custom" style="font-weight: 600; font-size: 0.9em; margin-bottom: 15px;"></div>
                 <!-- Username -->
                 <div class="form-group">
                     <input asp-for="UserName" class="form-input" placeholder="Username" />
