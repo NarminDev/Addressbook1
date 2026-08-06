@@ -119,12 +119,6 @@ namespace Addressbook1.Controllers
 
 
 
-
-
-
-
-
-
         //private readonly UserManager<AppUser> _userManager;
         //private readonly RoleManager<IdentityRole> _roleManager;
         //private readonly SignInManager<AppUser> _signInManager;
