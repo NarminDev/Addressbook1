@@ -1,5 +1,160 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Addressbook1.ViewModels.Contacts.ContactCreateVM
 @{
+    Layout = null;
 }
+
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeni Kontakt - Addressbook</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+            body {
+                background: linear-gradient(135deg, #e8ecef 0%, #a8d5c9 100%);
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                min-height: 100vh;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .form-container {
+                width: 350px;
+                background: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+                overflow: hidden;
+            }
+
+            .form-header {
+                background-color: #0f9675;
+                color: white;
+                padding: 20px;
+                text-align: center;
+            }
+
+                .form-header h3 {
+                    margin: 0;
+                    font-size: 1.3rem;
+                    font-weight: 700;
+                }
+
+            .form-body {
+                padding: 25px;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+                .form-group label {
+                    display: block;
+                    margin-bottom: 5px;
+                    font-weight: 600;
+                    color: #2d3748;
+                    font-size: 0.9rem;
+                }
+
+            .form-control {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                box-sizing: border-box;
+                outline: none;
+                font-family: inherit;
+                transition: all 0.3s;
+            }
+
+                .form-control:focus {
+                    border-color: #0f9675;
+                    box-shadow: 0 0 0 3px rgba(15, 150, 117, 0.1);
+                }
+
+            .text-danger {
+                color: #e53e3e;
+                font-size: 0.85rem;
+                display: block;
+                margin-top: 5px;
+            }
+
+            .form-actions {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 25px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                text-decoration: none;
+                text-align: center;
+                width: 45%;
+                box-sizing: border-box;
+            }
+
+            .btn-primary {
+                background: #0f9675;
+                color: white;
+                transition: background 0.2s;
+            }
+
+                .btn-primary:hover {
+                    background: #0a7359;
+                }
+
+            .btn-secondary {
+                background: #e2e8f0;
+                color: #4a5568;
+                transition: background 0.2s;
+            }
+
+                .btn-secondary:hover {
+                    background: #cbd5e0;
+                }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h3>Yeni Kontakt</h3>
+        </div>
+
+        <div class="form-body">
+            <form asp-action="Create" asp-controller="Contacts" method="post">
+
+                <div class="form-group">
+                    <label asp-for="Name">Ad</label>
+                    <input asp-for="Name" class="form-control" placeholder="Adı daxil edin" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Surname">Soyad</label>
+                    <input asp-for="Surname" class="form-control" placeholder="Soyadı daxil edin" />
+                    <span asp-validation-for="Surname" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Phone">Telefon</label>
+                    <input asp-for="Phone" class="form-control" placeholder="Nömrəni daxil edin" />
+                    <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+
+                <div class="form-actions">
+                    <a asp-action="Index" class="btn btn-secondary">Geri</a>
+                    <button type="submit" class="btn btn-primary">Əlavə Et</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
