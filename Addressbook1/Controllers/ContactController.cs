@@ -85,7 +85,53 @@ namespace Addressbook1.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        public async Task<IActionResult> Update(int? id)
+        {
+            ViewBag.Categories = await _db.Categories.ToListAsync();
+            Contact contact = await _db.Contacts.FindAsync(id);
 
+            UpdateContactVM contactVM = new UpdateContactVM()
+            {
+                Name = contact.Name,
+                Surname = contact.Surname,
+                Phone = contact.Phone,
+                CategoryId = contact.CategoryId
+            };
+            return View(contactVM);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Update(UpdateContactVM contactVM)
+        {
+            //if (contactVM.ImageFile is null)
+            //{
+            //    ModelState.AddModelError("ImageFile", "Image is required");
+            //    return View();
+            //}
+            //if (!contactVM.ImageFile.ContentType.Contains("image/"))
+            //{
+            //    ModelState.AddModelError("ImageFile", "File must be an image");
+            //    return View();
+            //}
+            //if (contactVM.ImageFile.Length > 2 * 1024 * 1024)
+            //{
+            //    ModelState.AddModelError("ImageFile", "File size can not exceed 2MB");
+            //    return View();
+            //}
+
+            if (!ModelState.IsValid) return View();
+            ViewBag.Categories = await _db.Categories.ToListAsync();
+            Contact oldContact = await _db.Contacts.FindAsync(contactVM.Id);
+
+            oldContact.Name = contactVM.Name;
+            oldContact.Surname = contactVM.Surname;
+            oldContact.Phone = contactVM.Phone;
+            oldContact.CategoryId = contactVM.CategoryId;
+
+            await _db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
 
 
 
