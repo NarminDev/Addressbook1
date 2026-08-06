@@ -66,6 +66,33 @@ namespace Addressbook1.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            Contact contact = await _db.Contacts.FindAsync(id);
+            contact.IsDeleted = true;
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Restore(int? id)
+        {
+            Contact contact = await _db.Contacts.FindAsync(id);
+            contact.IsDeleted = false;
+            await _db.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
+
+
+
+
+
+
 
 
     }
