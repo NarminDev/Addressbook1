@@ -20,15 +20,50 @@ namespace Addressbook1.Areas.Admin.Controllers
             _userManager = userManager;
         }
 
+        //public async Task<IActionResult> Index()
+        //{
+        //    // 1. Ümumi istifadəçi sayı
+        //    int totalUsers = await _userManager.Users.CountAsync();
+
+        //    // 2. Ümumi kontakt sayı
+        //    int totalContacts = await _db.Contacts.CountAsync();
+
+        //    // 3. Ən çox kontaktı olan kateqoriya
+        //    var topCategoryData = await _db.Contacts
+        //        .GroupBy(c => c.CategoryId)
+        //        .Select(g => new { CategoryId = g.Key, Count = g.Count() })
+        //        .OrderByDescending(g => g.Count)
+        //        .FirstOrDefaultAsync();
+
+        //    string topCatName = "Məlumat Yoxdur";
+        //    int topCatCount = 0;
+
+        //    if (topCategoryData != null && topCategoryData.CategoryId != null)
+        //    {
+        //        var category = await _db.Categories.FindAsync(topCategoryData.CategoryId);
+        //        if (category != null)
+        //        {
+        //            topCatName = category.Name;
+        //            topCatCount = topCategoryData.Count;
+        //        }
+        //    }
+
+        //    DashboardVM vm = new DashboardVM
+        //    {
+        //        TotalUsers = totalUsers,
+        //        TotalContacts = totalContacts,
+        //        TopCategoryName = topCatName,
+        //        TopCategoryCount = topCatCount
+        //    };
+
+        //    return View(vm);
+        //}
+
         public async Task<IActionResult> Index()
         {
-            // 1. Ümumi istifadəçi sayı
             int totalUsers = await _userManager.Users.CountAsync();
-
-            // 2. Ümumi kontakt sayı
             int totalContacts = await _db.Contacts.CountAsync();
 
-            // 3. Ən çox kontaktı olan kateqoriya
             var topCategoryData = await _db.Contacts
                 .GroupBy(c => c.CategoryId)
                 .Select(g => new { CategoryId = g.Key, Count = g.Count() })
@@ -38,7 +73,7 @@ namespace Addressbook1.Areas.Admin.Controllers
             string topCatName = "Məlumat Yoxdur";
             int topCatCount = 0;
 
-            if (topCategoryData != null && topCategoryData.CategoryId != null)
+            if (topCategoryData != null)
             {
                 var category = await _db.Categories.FindAsync(topCategoryData.CategoryId);
                 if (category != null)
@@ -48,12 +83,22 @@ namespace Addressbook1.Areas.Admin.Controllers
                 }
             }
 
+            // DINAMIK DIAQRAM MƏLUMATLARININ HAZIRLANMASI
+            var chartData = await _db.Categories
+                .Select(c => new CategoryChartItem
+                {
+                    CategoryName = c.Name,
+                    ContactCount = c.Contacts.Count
+                })
+                .ToListAsync();
+
             DashboardVM vm = new DashboardVM
             {
                 TotalUsers = totalUsers,
                 TotalContacts = totalContacts,
                 TopCategoryName = topCatName,
-                TopCategoryCount = topCatCount
+                TopCategoryCount = topCatCount,
+                CategoryChartData = chartData
             };
 
             return View(vm);

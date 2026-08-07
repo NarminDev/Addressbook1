@@ -68,6 +68,84 @@
             </div>
         </div>
 
+        <!-- Donut Chart Card -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <!-- Card Header -->
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Kateqoriya Üzrə Statistika</h6>
+                </div>
+                <!-- Card Body -->
+                <div class="card-body">
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="myCategoryChart"></canvas>
+                    </div>
+                    <!-- Dinamik Leqenda (Adlar və Rənglər) -->
+                    <div class="mt-4 text-center small" id="chartLegend">
+                        <!-- JavaScript ilə avtomatik dolacaq -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @section Scripts {
+            <!-- Chart.js Kitabxanası -->
+            <script src="~/admin/vendor/chart.js/Chart.min.js"></script>
+
+            <script>
+                        // C#-dan gələn məlumatları JSON formatına çeviririk
+                        const chartLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryChartData.Select(x => x.CategoryName)));
+                        const chartCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryChartData.Select(x => x.ContactCount)));
+
+                        // Rəng palitrası (kateqoriyalar artdıqca ardıcıl istifadə olunacaq)
+                        const palette = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796', '#5a5c69', '#6f42c1'];
+                        const backgroundColors = chartLabels.map((_, index) => palette[index % palette.length]);
+
+                        // 1. Chart-ın qurulması
+                        var ctx = document.getElementById("myCategoryChart");
+                        var myPieChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: chartLabels,
+                                datasets: [{
+                                    data: chartCounts,
+                                    backgroundColor: backgroundColors,
+                                    hoverBackgroundColor: backgroundColors,
+                                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                                }],
+                            },
+                            options: {
+                                maintainAspectRatio: false,
+                                tooltips: {
+                                    backgroundColor: "rgb(255,255,255)",
+                                    bodyFontColor: "#858796",
+                                    borderColor: '#dddfeb',
+                                    borderWidth: 1,
+                                    xPadding: 15,
+                                    yPadding: 15,
+                                    displayColors: false,
+                                    caretPadding: 10,
+                                },
+                                legend: {
+                                    display: false
+                                },
+                                cutoutPercentage: 80,
+                            },
+                        });
+
+                        // 2. Aşağıdakı adların (Legend) dinamik yaradılması
+                        const legendContainer = document.getElementById("chartLegend");
+                        chartLabels.forEach((label, index) => {
+                            const color = backgroundColors[index];
+                            legendContainer.innerHTML += `
+                                <span class="mr-2 d-inline-block mb-1">
+                                    <i class="fas fa-circle" style="color: ${color}"></i> ${label}
+                                </span>
+                            `;
+                        });
+            </script>
+        }
+
     </div>
 
 </div>
