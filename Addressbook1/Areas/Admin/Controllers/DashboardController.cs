@@ -62,6 +62,80 @@ namespace Addressbook1.Areas.Admin.Controllers
         //    return View(vm);
         //}
 
+        //public async Task<IActionResult> Index()
+        //{
+        //    int totalUsers = await _userManager.Users.CountAsync();
+        //    int totalContacts = await _db.Contacts.CountAsync();
+
+        //    var topCategoryData = await _db.Contacts
+        //        .GroupBy(c => c.CategoryId)
+        //        .Select(g => new { CategoryId = g.Key, Count = g.Count() })
+        //        .OrderByDescending(g => g.Count)
+        //        .FirstOrDefaultAsync();
+
+        //    string topCatName = "Məlumat Yoxdur";
+        //    int topCatCount = 0;
+
+        //    if (topCategoryData != null)
+        //    {
+        //        var category = await _db.Categories.FindAsync(topCategoryData.CategoryId);
+        //        if (category != null)
+        //        {
+        //            topCatName = category.Name;
+        //            topCatCount = topCategoryData.Count;
+        //        }
+        //    }
+
+        //    // DINAMIK DIAQRAM MƏLUMATLARININ HAZIRLANMASI
+        //    var chartData = await _db.Categories
+        //        .Select(c => new CategoryChartItem
+        //        {
+        //            CategoryName = c.Name,
+        //            ContactCount = c.Contacts.Count
+        //        })
+        //        .ToListAsync();
+
+        //    // 2. SON 6 AYIN İSTİFADƏÇİ STATİSTİKASI
+        //    var now = DateTime.Now;
+        //    var startDate = new DateTime(now.Year, now.Month, 1).AddMonths(-5); // 5 ay əvvəlin 1-ci günü
+
+        //    var recentUsers = await _userManager.Users
+        //        .Where(u => u.CreatedAt >= startDate)
+        //        .ToListAsync();
+
+        //    var monthlyUserData = new List<MonthlyUserChartItem>();
+
+        //    for (int i = 5; i >= 0; i--)
+        //    {
+        //        var targetDate = now.AddMonths(-i);
+        //        // Ayın adını Azərbaycan dilində almaq üçün (məs: Mart, Aprel)
+        //        string monthName = targetDate.ToString("MMMM", new System.Globalization.CultureInfo("az-AZ"));
+
+        //        int count = recentUsers.Count(u => u.CreatedAt.Year == targetDate.Year && u.CreatedAt.Month == targetDate.Month);
+
+        //        monthlyUserData.Add(new MonthlyUserChartItem
+        //        {
+        //            MonthName = monthName,
+        //            UserCount = count
+        //        });
+        //    }
+
+        //    DashboardVM vm = new DashboardVM
+        //    {
+        //        TotalUsers = totalUsers,
+        //        TotalContacts = totalContacts,
+        //        TopCategoryName = topCatName,
+        //        TopCategoryCount = topCatCount,
+        //        CategoryChartData = chartData,
+        //        MonthlyUserChartData = monthlyUserData
+        //    };
+
+        //    return View(vm);
+
+
+        //}
+
+
         public async Task<IActionResult> Index()
         {
             int totalUsers = await _userManager.Users.CountAsync();
@@ -86,14 +160,29 @@ namespace Addressbook1.Areas.Admin.Controllers
                 }
             }
 
-            // DINAMIK DIAQRAM MƏLUMATLARININ HAZIRLANMASI
-            var chartData = await _db.Categories
-                .Select(c => new CategoryChartItem
+            // 1. DİNAMİK DİAQRAM VƏ FAİZ MƏLUMATLARININ HAZIRLANMASI
+            var rawCategories = await _db.Categories
+                .Select(c => new
                 {
                     CategoryName = c.Name,
                     ContactCount = c.Contacts.Count
                 })
                 .ToListAsync();
+
+            // Progress Bar-lar üçün rəng palitrası
+            var colorClasses = new[] { "bg-danger", "bg-warning", "bg-primary", "bg-info", "bg-success", "bg-secondary" };
+
+            // 0-a bölünmə xətasının qarşısını almaq üçün yoxlama
+            int totalContactsForCalc = totalContacts > 0 ? totalContacts : 1;
+
+            // Faizlərin və rənglərin hesablanaraq Listə yığılması
+            var chartData = rawCategories.Select((c, index) => new CategoryChartItem
+            {
+                CategoryName = c.CategoryName,
+                ContactCount = c.ContactCount,
+                Percentage = Math.Round((double)c.ContactCount / totalContactsForCalc * 100, 1),
+                ColorClass = colorClasses[index % colorClasses.Length]
+            }).ToList();
 
             // 2. SON 6 AYIN İSTİFADƏÇİ STATİSTİKASI
             var now = DateTime.Now;
@@ -132,5 +221,8 @@ namespace Addressbook1.Areas.Admin.Controllers
 
             return View(vm);
         }
+
+
+
     }
 }

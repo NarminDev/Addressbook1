@@ -4,6 +4,8 @@
     {
         public string CategoryName { get; set; } = string.Empty;
         public int ContactCount { get; set; }
+        public double Percentage { get; set; } // Faiz dərəcəsi
+        public string ColorClass { get; set; } = "bg-primary"; // Bootstrap rəng klassı
     }
 
     public record MonthlyUserChartItem

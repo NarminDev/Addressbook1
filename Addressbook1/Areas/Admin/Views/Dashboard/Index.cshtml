@@ -8,7 +8,7 @@
         <h1 class="h3 mb-0 text-gray-800">Dashboard - Statistika</h1>
     </div>
 
-    <!-- Stat Kartları Sətiri -->
+    <!-- 1. STAT KARTLARI SƏTİRİ -->
     <div class="row">
 
         <!-- İstifadəçi Sayı Kartı -->
@@ -71,7 +71,7 @@
 
     </div>
 
-    <!-- Diaqramlar Sətiri -->
+    <!-- 2. DİAQRAMLAR SƏTİRİ -->
     <div class="row">
 
         <!-- Xətti Diaqram Kartı (Son 6 Ayın İstifadəçiləri) -->
@@ -101,6 +101,44 @@
                     <div class="mt-4 text-center small" id="chartLegend">
                         <!-- JavaScript ilə avtomatik dolacaq -->
                     </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 3. KATEQORİYA FAİZ GÖSTƏRİCİLƏRİ (PROGRESS BARS) SƏTİRİ -->
+    <div class="row">
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Kateqoriyaların Payı (%)</h6>
+                </div>
+                <div class="card-body">
+                    @if (Model.CategoryChartData != null && Model.CategoryChartData.Any())
+                    {
+                        @foreach (var cat in Model.CategoryChartData)
+                        {
+                            <h4 class="small font-weight-bold">
+                                @cat.CategoryName
+                                <span class="float-right">@cat.Percentage%</span>
+                            </h4>
+                            <div class="progress mb-4">
+                                <div class="progress-bar @cat.ColorClass"
+                                     role="progressbar"
+                                     style="width: @cat.Percentage.ToString(System.Globalization.CultureInfo.InvariantCulture)%"
+                                     aria-valuenow="@cat.Percentage"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-muted mb-0">Hələ ki, heç bir kateqoriya məlumatı yoxdur.</p>
+                    }
                 </div>
             </div>
         </div>
@@ -248,9 +286,6 @@
         }
     </script>
 }
-
-
-
 
 
 
