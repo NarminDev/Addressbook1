@@ -92,13 +92,39 @@ namespace Addressbook1.Areas.Admin.Controllers
                 })
                 .ToListAsync();
 
+            // 2. SON 6 AYIN İSTİFADƏÇİ STATİSTİKASI
+            var now = DateTime.Now;
+            var startDate = new DateTime(now.Year, now.Month, 1).AddMonths(-5); // 5 ay əvvəlin 1-ci günü
+
+            var recentUsers = await _userManager.Users
+                .Where(u => u.CreatedAt >= startDate)
+                .ToListAsync();
+
+            var monthlyUserData = new List<MonthlyUserChartItem>();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var targetDate = now.AddMonths(-i);
+                // Ayın adını Azərbaycan dilində almaq üçün (məs: Mart, Aprel)
+                string monthName = targetDate.ToString("MMMM", new System.Globalization.CultureInfo("az-AZ"));
+
+                int count = recentUsers.Count(u => u.CreatedAt.Year == targetDate.Year && u.CreatedAt.Month == targetDate.Month);
+
+                monthlyUserData.Add(new MonthlyUserChartItem
+                {
+                    MonthName = monthName,
+                    UserCount = count
+                });
+            }
+
             DashboardVM vm = new DashboardVM
             {
                 TotalUsers = totalUsers,
                 TotalContacts = totalContacts,
                 TopCategoryName = topCatName,
                 TopCategoryCount = topCatCount,
-                CategoryChartData = chartData
+                CategoryChartData = chartData,
+                MonthlyUserChartData = monthlyUserData
             };
 
             return View(vm);

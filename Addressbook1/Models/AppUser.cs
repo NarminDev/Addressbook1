@@ -8,5 +8,7 @@ namespace Addressbook1.Models
         public string Surname { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsAdmin { get; set; } = false;
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 }

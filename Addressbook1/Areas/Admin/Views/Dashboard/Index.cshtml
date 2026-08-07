@@ -1,4 +1,5 @@
 ﻿@model Addressbook1.Areas.Admin.ViewModels.Dashboard.DashboardVM
+
 <!-- Begin Page Content -->
 <div class="container-fluid">
 
@@ -7,7 +8,7 @@
         <h1 class="h3 mb-0 text-gray-800">Dashboard - Statistika</h1>
     </div>
 
-    <!-- Content Row -->
+    <!-- Stat Kartları Sətiri -->
     <div class="row">
 
         <!-- İstifadəçi Sayı Kartı -->
@@ -68,19 +69,35 @@
             </div>
         </div>
 
-        <!-- Donut Chart Card -->
+    </div>
+
+    <!-- Diaqramlar Sətiri -->
+    <div class="row">
+
+        <!-- Xətti Diaqram Kartı (Son 6 Ayın İstifadəçiləri) -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <h6 class="m-0 font-weight-bold text-primary">Son 6 Ayın İstifadəçi Qeydiyyatı</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-area">
+                        <canvas id="myUserAreaChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dairəvi Diaqram Kartı (Kateqoriya Statistikası) -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
-                <!-- Card Header -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Kateqoriya Üzrə Statistika</h6>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-pie pt-4 pb-2">
                         <canvas id="myCategoryChart"></canvas>
                     </div>
-                    <!-- Dinamik Leqenda (Adlar və Rənglər) -->
                     <div class="mt-4 text-center small" id="chartLegend">
                         <!-- JavaScript ilə avtomatik dolacaq -->
                     </div>
@@ -88,70 +105,149 @@
             </div>
         </div>
 
-        @section Scripts {
-            <!-- Chart.js Kitabxanası -->
-            <script src="~/admin/vendor/chart.js/Chart.min.js"></script>
-
-            <script>
-                        // C#-dan gələn məlumatları JSON formatına çeviririk
-                        const chartLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryChartData.Select(x => x.CategoryName)));
-                        const chartCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryChartData.Select(x => x.ContactCount)));
-
-                        // Rəng palitrası (kateqoriyalar artdıqca ardıcıl istifadə olunacaq)
-                        const palette = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796', '#5a5c69', '#6f42c1'];
-                        const backgroundColors = chartLabels.map((_, index) => palette[index % palette.length]);
-
-                        // 1. Chart-ın qurulması
-                        var ctx = document.getElementById("myCategoryChart");
-                        var myPieChart = new Chart(ctx, {
-                            type: 'doughnut',
-                            data: {
-                                labels: chartLabels,
-                                datasets: [{
-                                    data: chartCounts,
-                                    backgroundColor: backgroundColors,
-                                    hoverBackgroundColor: backgroundColors,
-                                    hoverBorderColor: "rgba(234, 236, 244, 1)",
-                                }],
-                            },
-                            options: {
-                                maintainAspectRatio: false,
-                                tooltips: {
-                                    backgroundColor: "rgb(255,255,255)",
-                                    bodyFontColor: "#858796",
-                                    borderColor: '#dddfeb',
-                                    borderWidth: 1,
-                                    xPadding: 15,
-                                    yPadding: 15,
-                                    displayColors: false,
-                                    caretPadding: 10,
-                                },
-                                legend: {
-                                    display: false
-                                },
-                                cutoutPercentage: 80,
-                            },
-                        });
-
-                        // 2. Aşağıdakı adların (Legend) dinamik yaradılması
-                        const legendContainer = document.getElementById("chartLegend");
-                        chartLabels.forEach((label, index) => {
-                            const color = backgroundColors[index];
-                            legendContainer.innerHTML += `
-                                <span class="mr-2 d-inline-block mb-1">
-                                    <i class="fas fa-circle" style="color: ${color}"></i> ${label}
-                                </span>
-                            `;
-                        });
-            </script>
-        }
-
     </div>
 
 </div>
 <!-- /.container-fluid -->
+@section Scripts {
+    <!-- Chart.js Kitabxanası -->
+    <script src="~/admin/vendor/chart.js/Chart.min.js"></script>
 
+    <script>
+        // ==========================================
+        // 1. DAİRƏVİ DİAQRAM (Kateqoriyalar üçün)
+        // ==========================================
+        const chartLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryChartData.Select(x => x.CategoryName)));
+        const chartCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CategoryChartData.Select(x => x.ContactCount)));
 
+        const palette = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796', '#5a5c69', '#6f42c1'];
+        const backgroundColors = chartLabels.map((_, index) => palette[index % palette.length]);
+
+        var ctx = document.getElementById("myCategoryChart");
+        if (ctx) {
+            var myPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        data: chartCounts,
+                        backgroundColor: backgroundColors,
+                        hoverBackgroundColor: backgroundColors,
+                        hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        caretPadding: 10,
+                    },
+                    legend: { display: false },
+                    cutoutPercentage: 80,
+                },
+            });
+
+            const legendContainer = document.getElementById("chartLegend");
+            if (legendContainer) {
+                chartLabels.forEach((label, index) => {
+                    const color = backgroundColors[index];
+                    legendContainer.innerHTML += `
+                                <span class="mr-2 d-inline-block mb-1">
+                                    <i class="fas fa-circle" style="color: ${color}"></i> ${label}
+                                </span>
+                            `;
+                });
+            }
+        }
+
+        // ==========================================
+        // 2. XƏTTİ DİAQRAM (Son 6 Ayın İstifadəçiləri)
+        // ==========================================
+        const userMonths = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyUserChartData.Select(x => x.MonthName)));
+        const userCounts = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.MonthlyUserChartData.Select(x => x.UserCount)));
+
+        var ctxArea = document.getElementById("myUserAreaChart");
+        if (ctxArea) {
+            var myLineChart = new Chart(ctxArea, {
+                type: 'line',
+                data: {
+                    labels: userMonths,
+                    datasets: [{
+                        label: "Qeydiyyatdan keçənlər",
+                        lineTension: 0.3,
+                        backgroundColor: "rgba(78, 115, 223, 0.05)",
+                        borderColor: "rgba(78, 115, 223, 1)",
+                        pointRadius: 3,
+                        pointBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHoverRadius: 5,
+                        pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
+                        pointHoverBorderColor: "rgba(78, 115, 223, 1)",
+                        pointHitRadius: 10,
+                        pointBorderWidth: 2,
+                        data: userCounts,
+                    }],
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    layout: {
+                        padding: { left: 10, right: 25, top: 25, bottom: 0 }
+                    },
+                    scales: {
+                        xAxes: [{
+                            time: { unit: 'date' },
+                            gridLines: { display: false, drawBorder: false },
+                            ticks: { maxTicksLimit: 7 }
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                maxTicksLimit: 5,
+                                padding: 10,
+                                beginAtZero: true,
+                                precision: 0
+                            },
+                            gridLines: {
+                                color: "rgb(234, 236, 244)",
+                                zeroLineColor: "rgb(234, 236, 244)",
+                                drawBorder: false,
+                                borderDash: [2],
+                                zeroLineBorderDash: [2]
+                            }
+                        }],
+                    },
+                    legend: { display: false },
+                    tooltips: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        titleMarginBottom: 10,
+                        titleFontColor: '#6e707e',
+                        titleFontSize: 14,
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        xPadding: 15,
+                        yPadding: 15,
+                        displayColors: false,
+                        intersect: false,
+                        mode: 'index',
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function(tooltipItem, chart) {
+                                var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                                return datasetLabel + ': ' + tooltipItem.yLabel + ' nəfər';
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+}
 
 
 
