@@ -1,11 +1,14 @@
 ﻿using Addressbook1.Areas.Admin.ViewModels.Category;
 using Addressbook1.DAL;
 using Addressbook1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Addressbook1.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     [Area("Admin")]
 
     public class CategoryController : Controller

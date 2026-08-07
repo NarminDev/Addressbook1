@@ -2,12 +2,15 @@
 using Addressbook1.DAL;
 using Addressbook1.Models;
 using Addressbook1.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Addressbook1.Areas.Admin.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     [Area("Admin")]
     public class DashboardController : Controller
     {
