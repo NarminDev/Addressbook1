@@ -17,6 +17,7 @@ namespace Addressbook1.ViewModels.Contacts
 
         // Əgər kateqoriya mütləqdirsə, bunu da əlavə edirik
         public int CategoryId { get; set; }
-        public object?[]? Id { get; internal set; }
+        public int Id { get;  set; }
+        public int UserId { get;  set; }
     }
 }

@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Addressbook1.Models.Contact>
+﻿@using Addressbook1.Models
+@model IEnumerable<Addressbook1.Models.Contact>
 @{
-    ViewData["Title"] = "My Contacts";
-    Layout = null; // Əlavə menyuların görünməməsi və tam tətbiq görünüşü üçün
+    ViewData["Title"] = "Kasper Contact";
+    Layout = null;
 }
 
 <!DOCTYPE html>
@@ -12,260 +13,355 @@
     <title>@ViewData["Title"] - Addressbook</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-            /* Ümumi Səhifə Fonu (Yaşıl Tonlar) */
+            /* Ümumi Səhifə Fonu */
             body {
-                background: linear-gradient(135deg, #e8ecef 0%, #a8d5c9 100%);
+                background: linear-gradient(135deg, #a8d5c9 0%, #0a7359 100%);
                 font-family: 'Plus Jakarta Sans', sans-serif;
                 min-height: 100vh;
                 margin: 0;
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                padding: 20px;
+                box-sizing: border-box;
             }
 
-            /* Yuxarı Sağ Küncdəki Log Out Düyməsi */
-            .logout-container {
-                position: absolute;
-                top: 25px;
-                right: 35px;
-            }
-            .logout-btn {
-                background-color: #ff4d4d;
-                color: white;
-                border: none;
-                padding: 10px 24px;
-                border-radius: 6px;
-                font-weight: 600;
-                font-size: 0.95rem;
-                cursor: pointer;
-                box-shadow: 0 4px 15px rgba(255, 77, 77, 0.3);
-                transition: all 0.3s ease;
-            }
-            .logout-btn:hover {
-                background-color: #cc0000;
-                transform: translateY(-2px);
-            }
-
-            /* Əsas Tətbiq Konteyneri (Telefon ölçüsündə) */
+            /* Əsas Tətbiq Konteyneri (Bütün ekranı tutacaq) */
             .app-container {
-                width: 400px;
+                width: 100%;
+                max-width: 1400px;
+                height: 92vh;
                 background: #ffffff;
-                border-radius: 12px;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-                overflow: hidden;
+                border-radius: 16px;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.25);
                 display: flex;
                 flex-direction: column;
+                overflow: hidden;
             }
 
             /* Üst Yaşıl Başlıq */
             .app-header {
                 background-color: #0f9675;
                 color: white;
-                padding: 20px 24px;
+                padding: 20px 40px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-            }
-            .app-header h3 {
-                margin: 0;
-                font-size: 1.4rem;
-                font-weight: 700;
-                letter-spacing: 0.5px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                z-index: 10;
             }
 
-            /* Axtarış İkonu (Dairə) */
-            .search-circle {
-                width: 32px;
-                height: 32px;
-                background-color: white;
-                border-radius: 50%;
-                cursor: pointer;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+                .app-header h3 {
+                    margin: 0;
+                    font-size: 1.8rem;
+                    font-weight: 700;
+                    letter-spacing: 0.5px;
+                }
+
+            /* Başlıqdakı Düymələr Konteyneri */
+            .header-actions {
                 display: flex;
-                justify-content: center;
                 align-items: center;
-                transition: transform 0.2s;
+                gap: 20px;
             }
-            .search-circle:hover { transform: scale(1.1); }
-            .search-circle::before { content: '🔍'; font-size: 14px; }
+
+            /* Yeni Əlavə Et və Log Out Düymələri */
+            .btn-add {
+                background-color: #ffffff;
+                color: #0f9675;
+                text-decoration: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 700;
+                font-size: 1rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(255,255,255,0.2);
+            }
+
+                .btn-add:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(255,255,255,0.3);
+                }
+
+            .btn-logout {
+                background-color: #ff4d4d;
+                color: white;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-weight: 700;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+                .btn-logout:hover {
+                    background-color: #cc0000;
+                }
 
             /* Axtarış Paneli */
             .search-box {
-                display: none;
                 background-color: #0a7359;
-                padding: 12px 24px;
-            }
-            .search-box input {
-                width: 100%;
-                padding: 12px 15px;
-                border: none;
-                border-radius: 6px;
-                outline: none;
-                box-sizing: border-box;
-                font-family: inherit;
+                padding: 15px 40px;
             }
 
-            /* Kontaktların Siyahısı (Skroll Hissəsi - Stack Overflow qorunması) */
+                .search-box input {
+                    width: 100%;
+                    max-width: 500px;
+                    padding: 12px 20px;
+                    border: none;
+                    border-radius: 8px;
+                    outline: none;
+                    font-size: 1rem;
+                    font-family: inherit;
+                }
+
+            /* Kontaktların Siyahısı (Böyük Kartlar - Grid) */
             .contact-list {
-                max-height: 480px;
+                flex: 1;
                 overflow-y: auto;
-                background-color: #f8f9fa;
+                background-color: #f0fdf4; /* Açıq yaşıl fon */
+                padding: 40px;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 30px;
+                align-content: start;
             }
 
-            /* Hər Bir Kontakt Sətri */
-            .contact-item {
-                padding: 16px 24px;
-                border-bottom: 1px solid #eef2f5;
+            /* Hər Bir Kontakt Kartı */
+            .contact-card {
+                background: #ffffff;
+                border-radius: 12px;
+                padding: 25px;
+                box-shadow: 0 5px 20px rgba(15, 150, 117, 0.08);
+                border-top: 6px solid #10b981;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+                .contact-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 25px rgba(15, 150, 117, 0.15);
+                }
+
+            .contact-info h4 {
+                margin: 0 0 10px 0;
+                font-size: 1.4rem;
+                color: #2d3748;
+                font-weight: 700;
+            }
+
+            .contact-info p {
+                margin: 0;
+                font-size: 1.1rem;
+                color: #4a5568;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                border-left: 5px solid #10b981;
-                background-color: #ffffff;
-                transition: background 0.2s;
             }
-            .contact-item:nth-child(even) { border-left-color: #0f9675; }
-            .contact-item:hover { background: #f1f5f9; }
 
-            .contact-info h4 { margin: 0 0 5px 0; font-size: 1.1rem; color: #2d3748; font-weight: 600; }
-            .contact-info p { margin: 0; font-size: 0.9rem; color: #718096; }
-
-            /* Silmə Düyməsi */
-            .btn-delete {
-                background: none;
-                border: none;
-                color: #ff4d4d;
-                cursor: pointer;
-                font-size: 1.3rem;
-                padding: 8px;
-                transition: color 0.2s;
-            }
-            .btn-delete:hover { color: #cc0000; }
-
-            /* Əlavə Etmə Düyməsi (+ Add new contact) */
-            .add-contact-btn {
-                text-align: center;
-                padding: 18px;
-                background: #ffffff;
+            .category-badge {
                 color: #0f9675;
-                font-weight: 700;
-                cursor: pointer;
-                border-top: 1px solid #eef2f5;
-                transition: background 0.2s;
+                font-size: 0.85rem;
+                font-weight: 600;
+                padding: 4px 10px;
+                background: #e6f4f1;
+                border-radius: 6px;
             }
-            .add-contact-btn:hover { background: #f0fdf4; }
 
-            /* --- PƏNCƏRƏLƏR (MODALLAR) --- */
+            /* Kartın İçindəki Düymələr (Yenilə / Sil) */
+            .card-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 12px;
+                margin-top: 20px;
+                padding-top: 15px;
+                border-top: 1px solid #eef2f5;
+            }
+
+            .btn-edit {
+                background-color: #e2e8f0;
+                color: #4a5568;
+                text-decoration: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.2s;
+            }
+
+                .btn-edit:hover {
+                    background-color: #cbd5e0;
+                }
+
+            .btn-delete-card {
+                background-color: #fee2e2;
+                color: #ef4444;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 0.9rem;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+                .btn-delete-card:hover {
+                    background-color: #fca5a5;
+                    color: white;
+                }
+
+            /* --- SİLMƏ ÜÇÜN MODAL --- */
             .modal-overlay {
                 display: none;
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.5);
-                backdrop-filter: blur(3px);
-                justify-content: center; align-items: center;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.6);
+                backdrop-filter: blur(4px);
+                justify-content: center;
+                align-items: center;
                 z-index: 1000;
             }
-            .modal-content {
-                background: white; padding: 30px; border-radius: 12px;
-                width: 320px; box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            }
-            .modal-content h4 { margin-top: 0; margin-bottom: 20px; color: #0f9675; font-size: 1.3rem; }
-            .form-control {
-                width: 100%; padding: 12px 15px; margin-bottom: 15px;
-                border: 1px solid #e2e8f0; border-radius: 6px; box-sizing: border-box;
-                outline: none; font-family: inherit;
-            }
-            .form-control:focus { border-color: #0f9675; box-shadow: 0 0 0 3px rgba(15, 150, 117, 0.1); }
 
-            .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
-            .btn { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-family: inherit; }
-            .btn-primary { background: #0f9675; color: white; }
-            .btn-danger { background: #ff4d4d; color: white; }
-            .btn-secondary { background: #e2e8f0; color: #4a5568; }
+            .modal-content {
+                background: white;
+                padding: 35px;
+                border-radius: 12px;
+                width: 350px;
+                box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+                text-align: center;
+            }
+
+                .modal-content h4 {
+                    margin-top: 0;
+                    margin-bottom: 15px;
+                    color: #ef4444;
+                    font-size: 1.4rem;
+                }
+
+                .modal-content p {
+                    color: #4a5568;
+                    font-size: 1.05rem;
+                    margin-bottom: 25px;
+                }
+
+            .modal-actions {
+                display: flex;
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 600;
+                font-family: inherit;
+                font-size: 1rem;
+            }
+
+            .btn-danger {
+                background: #ef4444;
+                color: white;
+            }
+
+            .btn-secondary {
+                background: #e2e8f0;
+                color: #4a5568;
+            }
 
             /* Skroll bar dizaynı */
-            ::-webkit-scrollbar { width: 6px; }
-            ::-webkit-scrollbar-track { background: #f1f1f1; }
-            ::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 3px; }
-            ::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
+            ::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            ::-webkit-scrollbar-track {
+                background: #e6f4f1;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #0f9675;
+                border-radius: 4px;
+            }
+
+                ::-webkit-scrollbar-thumb:hover {
+                    background: #0a7359;
+                }
     </style>
 </head>
 <body>
 
-    <!-- Yuxarı Sağ Küncdəki Log Out Düyməsi -->
-    <div class="logout-container">
-        <form asp-controller="Account" asp-action="Logout" method="post">
-            <button type="submit" class="logout-btn">Log Out</button>
-        </form>
-    </div>
-
     <div class="app-container">
-        <!-- Başlıq Hissəsi -->
+
+        <!-- Üst Başlıq Hissəsi -->
         <div class="app-header">
-            <h3>Kasper contacts</h3>
-            <!-- Axtarış İkonu -->
-            <div class="search-circle" onclick="toggleSearch()" title="Axtarış Et"></div>
+            <h3> Contact</h3>
+            <div class="header-actions">
+                <!-- YENİ KONTAKT DÜYMƏSİ (Səhifəyə Yönləndirir) -->
+                <a asp-action="Create" asp-controller="Contact" class="btn-add">+ Yeni Kontakt</a>
+
+                <!-- Log Out Düyməsi -->
+                <form asp-controller="Account" asp-action="Logout" method="post" style="margin:0;">
+                    <button type="submit" class="btn-logout">Çıxış (Log Out)</button>
+                </form>
+            </div>
         </div>
 
-        <!-- Axtarış Qutusu (Basıldıqda açılır) -->
-        <div class="search-box" id="searchBox">
+        <!-- Axtarış Qutusu -->
+        <div class="search-box">
             <form asp-action="Index" method="get">
-                <input type="text" name="searchQuery" value="@ViewData["SearchQuery"]" placeholder="İsim və ya nömrə axtar..." autocomplete="off" />
+                <input type="text" name="searchQuery" value="@ViewData["SearchQuery"]" placeholder="İsim və ya nömrə axtar və Enter'ə bas..." autocomplete="off" />
             </form>
         </div>
 
-        <!-- Kontakt Siyahısı (Skroll edilə bilən sahə) -->
+        <!-- Kontakt Siyahısı (Böyük Grid) -->
         <div class="contact-list">
             @if (Model != null && Model.Any())
             {
                 foreach (var contact in Model)
                 {
-                    <div class="contact-item">
+                    <div class="contact-card">
                         <div class="contact-info">
                             <h4>@contact.Name @contact.Surname</h4>
-                            <p>@contact.Phone</p>
+                            <p>
+                                @contact.Phone
+                                <span class="category-badge">
+                                    @(contact.Category?.Name ?? "Kateqoriyasız")
+                                </span>
+                            </p>
                         </div>
-                        <!-- Zibil Qutusu İkonu (Hard Delete) -->
-                        <button type="button" class="btn-delete" onclick="openDeleteModal(@contact.Id, '@contact.Name @contact.Surname')" title="Sil">🗑️</button>
+
+                        <div class="card-actions">
+                            <!-- YENİLƏ DÜYMƏSİ (Səhifəyə Yönləndirir) -->
+                            <a asp-action="Update" asp-controller="Contact" asp-route-id="@contact.Id" class="btn-edit">Yenilə</a>
+
+                            <!-- SİL DÜYMƏSİ (Modalı Açır) -->
+                            <button type="button" class="btn-delete-card" onclick="openDeleteModal(@contact.Id, '@contact.Name @contact.Surname')">Sil</button>
+                        </div>
                     </div>
                 }
             }
             else
             {
-                <div style="padding: 30px; text-align: center; color: #a0aec0;">
+                <div style="grid-column: 1 / -1; padding: 50px; text-align: center; color: #0f9675; font-size: 1.2rem; background: white; border-radius: 12px;">
                     Hələ heç bir kontakt əlavə edilməyib.
                 </div>
             }
         </div>
-
-        <!-- + Əlavə Et düyməsi siyahının ən altında, həmişə görünür -->
-        <div class="add-contact-btn" onclick="openAddModal()">
-            + Add new contact
-        </div>
     </div>
 
-    <!-- 1. YENİ KONTAKT ÜÇÜN MODAL PƏNCƏRƏ -->
-    <div class="modal-overlay" id="addModal">
-        <div class="modal-content">
-            <h4>Yeni Kontakt</h4>
-            <!-- Controller-dəki Create action-una göndərir -->
-            <form asp-action="Create" asp-controller="Contacts" method="post">
-                <input type="text" name="Name" class="form-control" placeholder="Ad" required />
-                <input type="text" name="Surname" class="form-control" placeholder="Soyad" required />
-                <input type="text" name="Phone" class="form-control" placeholder="Telefon" required />
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModals()">Ləğv et</button>
-                    <button type="submit" class="btn btn-primary">Əlavə et</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- 2. SİLMƏ ÜÇÜN XƏBƏRDARLIQ MODALI (Hard Delete) -->
+    <!-- SİLMƏ ÜÇÜN XƏBƏRDARLIQ MODALI (Hard Delete) -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-content">
             <h4>Silinmə Təsdiqi</h4>
             <p>Əminsiniz ki, <b id="deleteContactName"></b> adlı kontaktı silmək istəyirsiniz?</p>
-            <form id="deleteForm" asp-action="Delete" asp-controller="Contacts" method="post">
-                <!-- Silinəcək kontaktın ID-si bura yazılır -->
+            <form id="deleteForm" asp-action="Delete" asp-controller="Contact" method="post">
                 <input type="hidden" name="id" id="deleteContactId" />
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModals()">Xeyr</button>
@@ -276,22 +372,6 @@
     </div>
 
     <script>
-            // Axtarış panelini aç/bağla
-            function toggleSearch() {
-                var box = document.getElementById('searchBox');
-                if (box.style.display === 'block') {
-                    box.style.display = 'none';
-                } else {
-                    box.style.display = 'block';
-                    box.querySelector('input').focus();
-                }
-            }
-
-            // Əlavə etmə pəncərəsini aç
-            function openAddModal() {
-                document.getElementById('addModal').style.display = 'flex';
-            }
-
             // Silmə pəncərəsini aç və seçilən kontaktın məlumatlarını içinə yaz
             function openDeleteModal(id, fullName) {
                 document.getElementById('deleteContactId').value = id;
@@ -299,14 +379,13 @@
                 document.getElementById('deleteModal').style.display = 'flex';
             }
 
-            // Bütün pəncərələri bağla
+            // Pəncərəni bağla
             function closeModals() {
-                document.getElementById('addModal').style.display = 'none';
                 document.getElementById('deleteModal').style.display = 'none';
             }
 
             // Əgər istifadəçi modalın çölünə toxunarsa pəncərə bağlansın
-            window.onclick = function (event) {
+            window.onclick = function(event) {
                 if (event.target.classList.contains('modal-overlay')) {
                     closeModals();
                 }

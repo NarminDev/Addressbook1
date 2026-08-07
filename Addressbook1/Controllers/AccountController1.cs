@@ -61,7 +61,7 @@ namespace Addressbook1.Controllers
             if (!ModelState.IsValid) return View(loginVM);
             AppUser? user = await _userManager.FindByEmailAsync(loginVM.Email);
             await _signInManager.PasswordSignInAsync(user, loginVM.Password, false, false);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Contact");
         }
 
 

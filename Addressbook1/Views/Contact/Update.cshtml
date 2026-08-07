@@ -1,4 +1,4 @@
-﻿@model Addressbook1.Models.Contact
+﻿@model Addressbook1.ViewModels.Contacts.UpdateContactVM
 @{
     Layout = null;
 }
@@ -129,9 +129,10 @@
         </div>
 
         <div class="form-body">
-            <form asp-action="Update" asp-controller="Contacts" method="post">
+            <form asp-action="Update" asp-controller="Contact" method="post">
 
                 <!-- Seçilmiş kontaktın ID-si gizli göndərilir -->
+                <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="Id" />
                 <input type="hidden" asp-for="UserId" />
 
@@ -151,6 +152,13 @@
                     <label asp-for="Phone">Telefon</label>
                     <input asp-for="Phone" class="form-control" placeholder="Nömrəni daxil edin" />
                     <span asp-validation-for="Phone" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId">Kateqoriya</label>
+                    <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(ViewBag.Categories, "Id", "Name"))">
+                        <option value="">-- Kateqoriya Seçin --</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
                 </div>
 
                 <div class="form-actions">
